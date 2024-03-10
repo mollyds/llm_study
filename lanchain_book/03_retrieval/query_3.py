@@ -3,46 +3,27 @@ from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOpenAI
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
-# from langchain.prompts import PromptTemplate
-# from langchain.schema import HumanMessage
+
+chat = ChatOpenAI(model="gpt-3.5-turbo")
 
 embeddings = OpenAIEmbeddings(
     model="text-embedding-ada-002"
 )
 
 database = Chroma(
-    persist_directory="./data",
+    persist_directory="./.data",
     embedding_function=embeddings
 )
 
-query = "飛行車の最高速度は?"
+retriever = database.as_retriever() # データベースをRetrieverに変換する
 
-documents = database.similarity_search(query)
-documents_string = "" # ドキュメントの内容を格納する変数を初期化
-for document in documents:
-    documents_string += f"""
--------------------------
-{document.page_content}
-""" # ドキュメントの内容を追加（Start）
-
-prompt = PromptTemplate(
-    template="""文章を元に質問に答えてください。
-    
-文章:
-{document}
-
-質問: {query}
-""", # ドキュメントの内容を追加（End）
-
-    input_variables=["document", "query"]
+qa = RetrievalQA.from_llm(
+    llm=chat,
+    retriever=retriever,
+    return_source_documents=True # 返答にソースドキュメントを含めるかどうか
 )
 
-chat = ChatOpenAI(
-    model="gpt-3.5-turbo"
-)
+result = qa("飛行車の最高速度を教えて")
 
-result = chat([
-    HumanMessage(content=prompt.format(document=documents_string, query=query))
-])
-
-print(result.content)
+print(result["result"])
+print(result["source_documents"])
