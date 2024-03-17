@@ -11,7 +11,7 @@
   https://zenn.dev/ml_bear/books/d1f060a3f166a5
 
 - udm_lang_llm
-  LangChainによる大規模言語モデル（LLM）アプリケーション開発入門―GPTを使ったチャットボットの実装まで
+  LangChainによる大規模言語モデル（LLM）アプリケーション開発入門―GPTを使ったチャットボットの実装まで  
   https://www.udemy.com/course/langchain-apps/?couponCode=24T5FS31824
 
 
